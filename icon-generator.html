@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Converter - 久喜市ゴミ分別アプリ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+        canvas {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 PWAアイコン生成ツール</h1>
+        
+        <div class="icon-grid">
+            <div class="icon-item">
+                <h3>192x192 アイコン</h3>
+                <canvas id="canvas192" width="192" height="192"></canvas>
+                <br>
+                <button onclick="downloadIcon('canvas192', 'icon-192x192.png')">📥 ダウンロード</button>
+            </div>
+            
+            <div class="icon-item">
+                <h3>512x512 アイコン</h3>
+                <canvas id="canvas512" width="512" height="512"></canvas>
+                <br>
+                <button onclick="downloadIcon('canvas512', 'icon-512x512.png')">📥 ダウンロード</button>
+            </div>
+            
+            <div class="icon-item">
+                <h3>32x32 ファビコン</h3>
+                <canvas id="canvas32" width="32" height="32"></canvas>
+                <br>
+                <button onclick="downloadIcon('canvas32', 'favicon.png')">📥 ダウンロード</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button onclick="generateAllIcons()" style="background: #4CAF50; padding: 15px 30px; font-size: 16px; font-weight: bold;">
+                🚀 すべてのアイコンを生成
+            </button>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 使い方</h3>
+            <ol>
+                <li>「すべてのアイコンを生成」ボタンをクリック</li>
+                <li>各アイコンの「ダウンロード」ボタンでPNGファイルを保存</li>
+                <li>生成されたファイルをプロジェクトフォルダにコピー</li>
+                <li>PWAが正しいアイコンを表示することを確認</li>
+            </ol>
+            
+            <p><strong>📝 注意:</strong> この機能は最新のブラウザ（Chrome、Firefox、Safari、Edge）で動作します。</p>
+        </div>
+    </div>
+
+    <script>
+        function createTrashIcon(ctx, size) {
+            // グラデーション背景
+            const gradient = ctx.createLinearGradient(0, 0, 0, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // 背景
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // 角丸効果
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, size * 0.1);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // ゴミ箱アイコン
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const iconScale = size / 200; // 基準サイズ200pxからのスケール
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2 * iconScale;
+            
+            // ゴミ箱の蓋
+            const lidWidth = 60 * iconScale;
+            const lidHeight = 8 * iconScale;
+            const lidY = centerY - 35 * iconScale;
+            
+            ctx.fillRect(centerX - lidWidth/2, lidY, lidWidth, lidHeight);
+            
+            // 蓋の取っ手
+            const handleWidth = 24 * iconScale;
+            const handleHeight = 6 * iconScale;
+            const handleY = lidY - 12 * iconScale;
+            
+            ctx.strokeRect(
+                centerX - handleWidth/2, 
+                handleY, 
+                handleWidth, 
+                handleHeight
+            );
+            
+            // ゴミ箱本体
+            const bodyWidth = 48 * iconScale;
+            const bodyHeight = 60 * iconScale;
+            const bodyY = lidY + lidHeight;
+            
+            ctx.fillRect(centerX - bodyWidth/2, bodyY, bodyWidth, bodyHeight);
+            
+            // 縦線
+            const lineSpacing = 12 * iconScale;
+            for (let i = -1; i <= 1; i++) {
+                const lineX = centerX + i * lineSpacing;
+                ctx.beginPath();
+                ctx.moveTo(lineX, bodyY + 8 * iconScale);
+                ctx.lineTo(lineX, bodyY + bodyHeight - 8 * iconScale);
+                ctx.strokeStyle = '#764ba2';
+                ctx.lineWidth = 1.5 * iconScale;
+                ctx.stroke();
+            }
+            
+            // テキスト（大きいアイコンのみ）
+            if (size >= 192) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${16 * iconScale}px 'Noto Sans JP', sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText('久喜市', centerX, size - 25 * iconScale);
+                
+                if (size >= 512) {
+                    ctx.font = `${12 * iconScale}px 'Noto Sans JP', sans-serif`;
+                    ctx.fillText('ゴミ分別', centerX, size - 10 * iconScale);
+                }
+            }
+        }
+        
+        function generateIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Canvasをクリア
+            ctx.clearRect(0, 0, size, size);
+            
+            // アイコンを描画
+            createTrashIcon(ctx, size);
+        }
+        
+        function generateAllIcons() {
+            generateIcon('canvas192', 192);
+            generateIcon('canvas512', 512);
+            generateIcon('canvas32', 32);
+            
+            // 生成完了のフィードバック
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✅ 生成完了！';
+            button.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+            }, 2000);
+        }
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            
+            // ダウンロード実行
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // ダウンロード完了のフィードバック
+            console.log(`${filename} をダウンロードしました`);
+        }
+        
+        // ページ読み込み時に自動生成
+        window.addEventListener('load', () => {
+            generateAllIcons();
+        });
+        
+        // Canvas roundRect polyfill for older browsers
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+    </script>
+</body>
+</html>

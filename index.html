@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>久喜市ゴミ分別音声アプリ</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    
+    <!-- PWA対応 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#764ba2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="久喜ゴミ分別">
+    
+    <!-- SEO -->
+    <meta name="description" content="久喜市のゴミ分別方法を音声で案内するアプリ。ペットボトル、生ゴミ、プラスチック容器など、様々なゴミの正しい分別方法と収集日を簡単に検索できます。">
+    <meta name="keywords" content="久喜市,ゴミ分別,音声認識,リサイクル,環境">
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ 久喜市ゴミ分別アプリ</h1>
+        
+        <button class="voice-button" id="voiceButton" onclick="startVoiceRecognition()" title="マイクボタンを押して音声で質問できます。「生ごみはなんですか？」のような自然な質問も可能です。">
+            🎤
+        </button>
+        
+        <!-- 地域選択セクション -->
+        <div class="region-section">
+            <div class="region-header">
+                <h3>🏠 お住まいの地域を選択してください</h3>
+                <div class="current-region" id="currentRegion">
+                    地域が設定されていません
+                </div>
+            </div>
+            <div class="region-selector" id="regionSelector" style="display: none;">
+                <select id="regionSelect">
+                    <option value="">地域を選択してください</option>
+                </select>
+                <button class="region-button" onclick="setRegion()">設定</button>
+                <button class="region-button cancel" onclick="cancelRegionSelection()">キャンセル</button>
+            </div>
+            <button class="change-region-button" onclick="showRegionSelector()">地域を変更</button>
+        </div>
+
+        <div class="tips">
+            <p><strong>🎤 音声での使い方：</strong><br>
+            マイクボタンを押して、「ペットボトル」「生ゴミ」などのゴミの名前を話すか、<br>
+            「生ごみはなんですか？」「ペットボトルの分別方法を教えて」「今日のゴミは何？」などの<br>
+            自然な質問形式で話しかけてください</p>
+            <p><strong>📝 入力での使い方：</strong><br>
+            下の入力欄に直接ゴミの名前を入力してください</p>
+        </div>
+        
+        <div class="input-section">
+            <input type="text" id="itemInput" placeholder="例：ペットボトル、生ゴミ、電池など" onkeypress="handleKeyPress(event)">
+            <button class="search-button" onclick="searchItem()">検索</button>
+        </div>
+
+        <div class="quick-search">
+            <button class="quick-button" onclick="quickSearch('ペットボトル')">ペットボトル</button>
+            <button class="quick-button" onclick="quickSearch('ビニール袋')">ビニール袋</button>
+            <button class="quick-button" onclick="quickSearch('空き缶')">空き缶</button>
+            <button class="quick-button" onclick="quickSearch('新聞紙')">新聞紙</button>
+            <button class="quick-button" onclick="quickSearch('生ゴミ')">生ゴミ</button>
+            <button class="quick-button" onclick="quickSearch('電池')">電池</button>
+            <button class="quick-button" onclick="quickSearch('ダンボール')">ダンボール</button>
+            <button class="quick-button" onclick="quickSearch('牛乳パック')">牛乳パック</button>
+        </div>
+
+        <!-- 今日の収集情報 -->
+        <div id="todaysCollection" class="todays-collection"></div>
+
+        <!-- 最近の検索履歴 -->
+        <div id="recentSearches" class="recent-searches" style="display: none;"></div>
+        
+        <!-- PWAインストールボタン -->
+        <button id="installButton" class="install-button" style="display: none;">📱 アプリをインストール</button>
+        
+        <div id="status" class="status" style="display: none;"></div>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <!-- マイク許可確認モーダル -->
+    <div id="permissionModal" class="permission-modal" style="display: none;">
+        <div class="permission-content">
+            <h3>🎤 マイクの使用許可</h3>
+            <p>音声でゴミの種類を検索するため、<br>マイクの使用を許可してください。</p>
+            <div class="permission-buttons">
+                <button class="permission-button permission-allow" onclick="allowMicrophone()">許可する</button>
+                <button class="permission-button permission-deny" onclick="denyMicrophone()">拒否する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="regionData.js"></script>
+    <script src="garbageData.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // アプリケーション初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+    </script>
+</body>
+</html>

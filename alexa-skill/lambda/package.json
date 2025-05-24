@@ -1,0 +1,17 @@
+{
+  "name": "kuki-trash-alexa-skill",
+  "version": "1.0.0",
+  "description": "久喜市ゴミ分別Alexaスキルのバックエンド",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "lambda-local": "node index.js",
+    "package": "zip -r ../alexa-skill-deployment.zip ."
+  },
+  "dependencies": {
+    "ask-sdk-core": "^2.7.0",
+    "ask-sdk-model": "^1.19.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}

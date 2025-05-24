@@ -1,0 +1,25 @@
+services:
+  kuki-trash-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kuki-trash-app
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kuki-trash-app.rule=Host(`localhost`)"
+      - "traefik.http.services.kuki-trash-app.loadbalancer.server.port=80"
+
+networks:
+  default:
+    name: kuki-trash-network

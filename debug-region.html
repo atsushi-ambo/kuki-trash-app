@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地域デバッグテスト</title>
+</head>
+<body>
+    <h1>地域機能デバッグテスト</h1>
+    
+    <div id="debug-output">
+        <h2>デバッグ情報:</h2>
+        <div id="debug-log"></div>
+    </div>
+    
+    <div id="currentRegion">初期値</div>
+    <select id="regionSelect">
+        <option value="">選択してください</option>
+    </select>
+    
+    <script src="regionData.js"></script>
+    <script>
+        // デバッグ用のユーザー地域
+        let userRegion = localStorage.getItem('userRegion') || 'kuki-d';
+        
+        function debugLog(message) {
+            console.log(message);
+            const logDiv = document.getElementById('debug-log');
+            if (logDiv) {
+                logDiv.innerHTML += '<p>' + message + '</p>';
+            }
+        }
+        
+        // regionDataの読み込み確認
+        debugLog('=== 地域データ確認 ===');
+        if (typeof regionData === 'undefined') {
+            debugLog('❌ regionData.jsが読み込まれていません');
+        } else {
+            debugLog('✅ regionData.jsが読み込まれました');
+            debugLog('利用可能な地域数: ' + Object.keys(regionData).length);
+            debugLog('利用可能な地域: ' + Object.keys(regionData).join(', '));
+        }
+        
+        // ユーザー地域確認
+        debugLog('=== ユーザー地域確認 ===');
+        debugLog('現在のuserRegion: ' + userRegion);
+        
+        if (regionData && regionData[userRegion]) {
+            debugLog('✅ 地域情報が見つかりました: ' + regionData[userRegion].name);
+        } else {
+            debugLog('❌ 地域情報が見つかりません');
+        }
+        
+        // DOM要素確認
+        debugLog('=== DOM要素確認 ===');
+        const currentRegionEl = document.getElementById('currentRegion');
+        const regionSelectEl = document.getElementById('regionSelect');
+        
+        debugLog('currentRegion要素: ' + (currentRegionEl ? '✅ 存在' : '❌ なし'));
+        debugLog('regionSelect要素: ' + (regionSelectEl ? '✅ 存在' : '❌ なし'));
+        
+        // 地域表示テスト
+        if (currentRegionEl && regionData && regionData[userRegion]) {
+            currentRegionEl.textContent = regionData[userRegion].name;
+            debugLog('✅ 地域表示を更新しました: ' + regionData[userRegion].name);
+        }
+        
+        // 地域選択リスト作成テスト
+        if (regionSelectEl && regionData) {
+            regionSelectEl.innerHTML = '<option value="">地域を選択してください</option>';
+            Object.keys(regionData).forEach(regionKey => {
+                const option = document.createElement('option');
+                option.value = regionKey;
+                option.textContent = regionData[regionKey].name;
+                if (regionKey === userRegion) {
+                    option.selected = true;
+                }
+                regionSelectEl.appendChild(option);
+            });
+            debugLog('✅ 地域選択リストを作成しました');
+        }
+    </script>
+</body>
+</html>

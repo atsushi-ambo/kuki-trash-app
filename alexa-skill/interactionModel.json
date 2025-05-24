@@ -1,0 +1,190 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "久喜市ゴミ分別",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "GarbageSearchIntent",
+          "slots": [
+            {
+              "name": "GarbageItem",
+              "type": "GARBAGE_ITEMS"
+            }
+          ],
+          "samples": [
+            "{GarbageItem}の分別方法を教えて",
+            "{GarbageItem}はどのゴミですか",
+            "{GarbageItem}の出し方を知りたい",
+            "{GarbageItem}について",
+            "{GarbageItem}",
+            "{GarbageItem}はどうやって捨てますか",
+            "{GarbageItem}の捨て方",
+            "{GarbageItem}の処分方法"
+          ]
+        },
+        {
+          "name": "CollectionDayIntent",
+          "slots": [
+            {
+              "name": "GarbageType",
+              "type": "GARBAGE_TYPES"
+            }
+          ],
+          "samples": [
+            "{GarbageType}の収集日はいつですか",
+            "{GarbageType}はいつ出せますか",
+            "{GarbageType}の回収日",
+            "収集日を教えて",
+            "いつゴミを出せますか"
+          ]
+        },
+        {
+          "name": "LaunchRequestIntent",
+          "samples": [
+            "久喜市のゴミ分別について教えて",
+            "ゴミの分別方法を知りたい",
+            "使い方を教えて"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "GARBAGE_ITEMS",
+          "values": [
+            {
+              "name": {
+                "value": "ペットボトル"
+              }
+            },
+            {
+              "name": {
+                "value": "ビニール袋"
+              }
+            },
+            {
+              "name": {
+                "value": "空き缶"
+              }
+            },
+            {
+              "name": {
+                "value": "新聞紙"
+              }
+            },
+            {
+              "name": {
+                "value": "生ゴミ"
+              }
+            },
+            {
+              "name": {
+                "value": "電池"
+              }
+            },
+            {
+              "name": {
+                "value": "ダンボール"
+              }
+            },
+            {
+              "name": {
+                "value": "牛乳パック"
+              }
+            },
+            {
+              "name": {
+                "value": "プラスチック容器"
+              }
+            },
+            {
+              "name": {
+                "value": "蛍光灯"
+              }
+            },
+            {
+              "name": {
+                "value": "スプレー缶"
+              }
+            },
+            {
+              "name": {
+                "value": "家具"
+              }
+            },
+            {
+              "name": {
+                "value": "テレビ"
+              }
+            },
+            {
+              "name": {
+                "value": "冷蔵庫"
+              }
+            },
+            {
+              "name": {
+                "value": "洗濯機"
+              }
+            },
+            {
+              "name": {
+                "value": "エアコン"
+              }
+            },
+            {
+              "name": {
+                "value": "自転車"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GARBAGE_TYPES",
+          "values": [
+            {
+              "name": {
+                "value": "可燃ゴミ"
+              }
+            },
+            {
+              "name": {
+                "value": "不燃ゴミ"
+              }
+            },
+            {
+              "name": {
+                "value": "資源ゴミ"
+              }
+            },
+            {
+              "name": {
+                "value": "プラスチック"
+              }
+            },
+            {
+              "name": {
+                "value": "粗大ゴミ"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音声認識地域テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .result { background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; }
+        select { padding: 8px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>音声認識地域機能テスト</h1>
+
+    <div class="test-section">
+        <h2>地域設定テスト</h2>
+        <p>現在の地域: <span id="currentRegion">loading...</span></p>
+        <select id="regionSelect">
+            <option value="">地域を選択...</option>
+        </select>
+        <button onclick="changeTestRegion()">地域変更</button>
+    </div>
+
+    <div class="test-section">
+        <h2>音声認識テスト（手動入力）</h2>
+        <p>音声認識の代わりに手動でテスト文言を入力します</p>
+        <input type="text" id="voiceInput" placeholder="例: 今日のゴミは何？" style="width: 300px; padding: 8px;">
+        <button onclick="testVoiceInput()">テスト実行</button>
+        <div id="voiceResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>地域スケジュール確認</h2>
+        <button onclick="showRegionSchedule()">現在地域のスケジュール表示</button>
+        <div id="scheduleResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>収集日判定テスト</h2>
+        <input type="date" id="testDate" />
+        <button onclick="testCollectionDay()">指定日の収集確認</button>
+        <div id="collectionResult" class="result"></div>
+    </div>
+
+    <script src="regionData.js"></script>
+    <script>
+        // アプリケーションと同じ地域管理
+        let userRegion = localStorage.getItem('userRegion') || 'kuki-d';
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTest();
+        });
+
+        function initializeTest() {
+            updateCurrentRegionDisplay();
+            populateRegionSelect();
+            
+            // 今日の日付をデフォルトに設定
+            const today = new Date();
+            document.getElementById('testDate').value = today.toISOString().split('T')[0];
+        }
+
+        function updateCurrentRegionDisplay() {
+            const currentRegionSpan = document.getElementById('currentRegion');
+            const regionInfo = regionData[userRegion];
+            if (currentRegionSpan && regionInfo) {
+                currentRegionSpan.textContent = regionInfo.name;
+                console.log('現在の地域:', userRegion, regionInfo.name);
+            }
+        }
+
+        function populateRegionSelect() {
+            const regionSelect = document.getElementById('regionSelect');
+            regionSelect.innerHTML = '<option value="">地域を選択...</option>';
+            
+            Object.entries(regionData).forEach(([regionId, regionInfo]) => {
+                const option = document.createElement('option');
+                option.value = regionId;
+                option.textContent = regionInfo.name;
+                if (regionId === userRegion) {
+                    option.selected = true;
+                }
+                regionSelect.appendChild(option);
+            });
+        }
+
+        function changeTestRegion() {
+            const regionSelect = document.getElementById('regionSelect');
+            const newRegion = regionSelect.value;
+            
+            if (newRegion && newRegion !== userRegion) {
+                userRegion = newRegion;
+                localStorage.setItem('userRegion', userRegion);
+                updateCurrentRegionDisplay();
+                console.log('地域を変更:', newRegion);
+            }
+        }
+
+        function testVoiceInput() {
+            const input = document.getElementById('voiceInput').value;
+            const result = document.getElementById('voiceResult');
+            
+            console.log('=== 音声入力テスト開始 ===');
+            console.log('入力:', input);
+            console.log('現在の地域:', userRegion);
+            
+            // 処理された音声入力をテスト
+            const processedQuery = processVoiceInput(input);
+            console.log('処理後のクエリ:', processedQuery);
+            
+            // 収集日クエリかどうかチェック
+            if (processedQuery.includes('今日') || processedQuery.includes('明日') || processedQuery.includes('収集')) {
+                const collectionInfo = handleCollectionQuery(processedQuery);
+                result.innerHTML = `
+                    <strong>収集日クエリとして処理:</strong><br>
+                    元の入力: ${input}<br>
+                    処理後: ${processedQuery}<br>
+                    使用地域: ${userRegion} (${regionData[userRegion].name})<br>
+                    結果: ${collectionInfo}
+                `;
+            } else {
+                result.innerHTML = `
+                    <strong>一般的なゴミ分別クエリとして処理:</strong><br>
+                    処理後: ${processedQuery}
+                `;
+            }
+        }
+
+        function showRegionSchedule() {
+            const result = document.getElementById('scheduleResult');
+            const regionInfo = regionData[userRegion];
+            
+            if (!regionInfo) {
+                result.innerHTML = '地域情報が見つかりません';
+                return;
+            }
+            
+            let scheduleHtml = `<strong>${regionInfo.name}の収集スケジュール:</strong><br><br>`;
+            
+            Object.entries(regionInfo.schedule).forEach(([garbageType, schedule]) => {
+                scheduleHtml += `${garbageType}: ${schedule.days.join('・')} ${schedule.time}<br>`;
+            });
+            
+            result.innerHTML = scheduleHtml;
+        }
+
+        function testCollectionDay() {
+            const dateInput = document.getElementById('testDate').value;
+            const result = document.getElementById('collectionResult');
+            
+            if (!dateInput) {
+                result.innerHTML = '日付を選択してください';
+                return;
+            }
+            
+            const testDate = new Date(dateInput);
+            const regionInfo = regionData[userRegion];
+            
+            if (!regionInfo) {
+                result.innerHTML = '地域情報が見つかりません';
+                return;
+            }
+            
+            const collections = [];
+            Object.entries(regionInfo.schedule).forEach(([garbageType, schedule]) => {
+                if (isCollectionDay(testDate, schedule.days)) {
+                    collections.push(garbageType);
+                }
+            });
+            
+            const dateStr = testDate.toLocaleDateString('ja-JP');
+            result.innerHTML = `
+                <strong>${dateStr} (${regionInfo.name})の収集:</strong><br>
+                ${collections.length > 0 ? collections.join('、') : 'なし'}
+            `;
+        }
+
+        // アプリケーションの関数をコピー
+        function processVoiceInput(transcript) {
+            console.log('音声認識結果:', transcript);
+            
+            // 今日・明日の収集日クエリ
+            if (transcript.includes('今日') && (transcript.includes('ゴミ') || transcript.includes('収集'))) {
+                return '今日';
+            }
+            if (transcript.includes('明日') && (transcript.includes('ゴミ') || transcript.includes('収集'))) {
+                return '明日';
+            }
+            
+            // 自然な質問形式を検索クエリに変換
+            let cleanedInput = transcript
+                .replace(/は何ですか\?*$/i, '')
+                .replace(/って何\?*$/i, '')
+                .replace(/はなんですか\?*$/i, '')
+                .replace(/ってなに\?*$/i, '')
+                .replace(/の分別方法を教えて$/i, '')
+                .replace(/はどうやって捨てる\?*$/i, '')
+                .replace(/の捨て方は\?*$/i, '')
+                .replace(/^(この|その|あの|どの)\s*/, '')
+                .replace(/\s*(は|を|が|の|に|で|と)\s*$/, '')
+                .trim();
+            
+            return cleanedInput || transcript;
+        }
+
+        function handleCollectionQuery(query) {
+            console.log('handleCollectionQuery called with:', query);
+            console.log('使用する地域:', userRegion);
+            
+            const regionInfo = regionData[userRegion];
+            if (!regionInfo) {
+                console.error('地域情報が見つかりません:', userRegion);
+                return '地域情報が設定されていません。';
+            }
+            
+            console.log('地域情報:', regionInfo.name);
+            
+            const today = new Date();
+            let targetDate = new Date(today);
+            
+            if (query.includes('明日')) {
+                targetDate.setDate(today.getDate() + 1);
+            }
+            
+            console.log('対象日:', targetDate.toLocaleDateString('ja-JP'));
+            
+            const todaysCollections = [];
+            Object.entries(regionInfo.schedule).forEach(([garbageType, schedule]) => {
+                console.log(`チェック中: ${garbageType}, スケジュール:`, schedule.days);
+                if (isCollectionDay(targetDate, schedule.days)) {
+                    console.log(`収集対象: ${garbageType}`);
+                    todaysCollections.push(garbageType);
+                }
+            });
+            
+            const dayText = query.includes('明日') ? '明日' : '今日';
+            
+            if (todaysCollections.length > 0) {
+                return `${dayText}は${todaysCollections.join('、')}の収集日です。朝8時30分までに出してください。(${regionInfo.name})`;
+            } else {
+                return `${dayText}はゴミの収集日ではありません。(${regionInfo.name})`;
+            }
+        }
+
+        function isCollectionDay(date, scheduleDays) {
+            const dayOfWeek = date.getDay();
+            const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+            const currentDay = dayNames[dayOfWeek];
+            
+            const weekOfMonth = Math.ceil(date.getDate() / 7);
+            
+            for (const scheduleDay of scheduleDays) {
+                console.log(`チェック中: ${scheduleDay}, 今日: ${currentDay}, 第${weekOfMonth}週`);
+                
+                if (scheduleDay.includes('回収ボックス')) {
+                    continue;
+                }
+                
+                if (scheduleDay === currentDay) {
+                    console.log(`毎週${currentDay}にマッチ`);
+                    return true;
+                }
+                
+                if (scheduleDay.includes('第') && scheduleDay.includes(currentDay)) {
+                    const weekPattern = scheduleDay.replace(currentDay, '');
+                    
+                    if (weekPattern.includes('・')) {
+                        const weeks = weekPattern.split('・').map(w => w.replace('第', '').trim());
+                        for (const week of weeks) {
+                            if (parseInt(week) === weekOfMonth) {
+                                console.log(`第${week}${currentDay}にマッチ`);
+                                return true;
+                            }
+                        }
+                    } else {
+                        const week = weekPattern.replace('第', '').trim();
+                        if (parseInt(week) === weekOfMonth) {
+                            console.log(`第${week}${currentDay}にマッチ`);
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

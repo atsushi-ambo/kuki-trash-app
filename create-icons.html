@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Generator</title>
+</head>
+<body>
+    <div id="iconContainer">
+        <canvas id="iconCanvas" width="512" height="512"></canvas>
+    </div>
+    
+    <script>
+        // Create a simple trash can icon for the PWA
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Fill background
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw trash can icon
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const iconSize = size * 0.6;
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = size * 0.02;
+            
+            // Trash can lid
+            const lidY = centerY - iconSize * 0.3;
+            ctx.fillRect(centerX - iconSize * 0.4, lidY - iconSize * 0.05, iconSize * 0.8, iconSize * 0.1);
+            
+            // Lid handle
+            ctx.strokeRect(centerX - iconSize * 0.15, lidY - iconSize * 0.15, iconSize * 0.3, iconSize * 0.1);
+            
+            // Trash can body
+            const bodyY = lidY + iconSize * 0.05;
+            ctx.fillRect(centerX - iconSize * 0.3, bodyY, iconSize * 0.6, iconSize * 0.5);
+            
+            // Vertical lines on trash can
+            ctx.strokeRect(centerX - iconSize * 0.1, bodyY + iconSize * 0.1, 0, iconSize * 0.3);
+            ctx.strokeRect(centerX, bodyY + iconSize * 0.1, 0, iconSize * 0.3);
+            ctx.strokeRect(centerX + iconSize * 0.1, bodyY + iconSize * 0.1, 0, iconSize * 0.3);
+            
+            return canvas;
+        }
+        
+        // Generate and download icons
+        function generateIcons() {
+            const sizes = [16, 32, 192, 512];
+            
+            sizes.forEach(size => {
+                const canvas = createIcon(size);
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+        
+        // Auto-generate icons
+        window.onload = generateIcons;
+    </script>
+</body>
+</html>
