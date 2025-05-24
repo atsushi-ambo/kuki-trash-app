@@ -7,7 +7,7 @@
 
 埼玉県久喜市のゴミ分別ルールを音声で案内するProgressive Web Application（PWA）です。久喜市の公開分別情報を参考に、音声認識と音声案内機能で直感的にゴミの分別方法を検索できます。
 
-![アプリのスクリーンショット](https://via.placeholder.com/600x400/4ecdc4/ffffff?text=Kuki+Trash+App)
+![アプリのスクリーンショット](docs/images/app-screenshot.png)
 
 > **⚠️ 重要な注意事項**  
 > これは **個人開発のアプリケーション** であり、久喜市公式のアプリではありません。  
@@ -97,7 +97,7 @@
 
 #### 1. リポジトリのクローン
 ```bash
-git clone https://github.com/yourusername/kuki-trash-app.git
+git clone https://github.com/atsushi-ambo/kuki-trash-app.git
 cd kuki-trash-app
 ```
 
@@ -257,8 +257,8 @@ docker run -d --name kuki-trash-app-prod \
 ```bash
 # AWS ECS, Azure Container Instances, GCP Cloud Runなどで利用可能
 # Docker Hubへのプッシュ
-docker tag kuki-trash-app:production yourusername/kuki-trash-app:latest
-docker push yourusername/kuki-trash-app:latest
+docker tag kuki-trash-app:production atsushi-ambo/kuki-trash-app:latest
+docker push atsushi-ambo/kuki-trash-app:latest
 ```
 
 ## 📝 TODO
