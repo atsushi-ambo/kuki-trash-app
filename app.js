@@ -202,17 +202,7 @@ function findGarbageCategory(query) {
         }
     }
 
-    // 2. 部分一致検索
-    for (const [category, data] of Object.entries(garbageDatabase)) {
-        const matchedItem = data.items.find(item => 
-            item.toLowerCase().includes(query) || query.includes(item.toLowerCase())
-        );
-        if (matchedItem) {
-            return { category, data, item: matchedItem };
-        }
-    }
-
-    // 3. キーワードマッピング検索
+    // 2. キーワードマッピング検索 (Moved up for higher priority)
     for (const [keyword, categories] of Object.entries(keywordMapping)) {
         if (query.includes(keyword.toLowerCase()) || keyword.toLowerCase().includes(query)) {
             // 最初にマッチしたカテゴリを返す
@@ -220,6 +210,16 @@ function findGarbageCategory(query) {
             if (garbageDatabase[category]) {
                 return { category, data: garbageDatabase[category], item: keyword };
             }
+        }
+    }
+
+    // 3. 部分一致検索 (Moved down)
+    for (const [category, data] of Object.entries(garbageDatabase)) {
+        const matchedItem = data.items.find(item => 
+            item.toLowerCase().includes(query) || query.includes(item.toLowerCase())
+        );
+        if (matchedItem) {
+            return { category, data, item: matchedItem };
         }
     }
 
