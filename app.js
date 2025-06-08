@@ -3,7 +3,7 @@ let isListening = false;
 let recognition = null;
 let currentAudio = null;
 let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
-let userRegion = localStorage.getItem('userRegion') || 'kuki-d'; // デフォルトは久喜地区Dブロック
+let userRegion = localStorage.getItem('userRegion') || null; // デフォルトは未選択
 
 // DOM要素の取得
 const voiceButton = document.getElementById('voiceButton');
@@ -195,6 +195,18 @@ function searchItem() {
 
 // ゴミ分別検索ロジック
 function findGarbageCategory(query) {
+    // Special case for plastic - provide detailed guidance
+    if (query === 'プラスチック' || query === 'プラ') {
+        return {
+            category: '資源プラスチック類',
+            data: {
+                ...garbageDatabase['資源プラスチック類'],
+                instructions: 'プラスチック製品は汚れの状態によって分別が変わります：<br><br>【資源プラスチック類】（推奨）<br>• きれいなプラスチック容器・袋（プラマーク付き）<br>• 汚れを落として水洗いしてから出す<br><br>【燃やせるごみ】<br>• 汚れが落ちないプラスチック<br>• プラマークのないプラスチック製品<br>• 歯ブラシ、ボールペンなど小物'
+            },
+            item: 'プラスチック（種類により分別が異なります）'
+        };
+    }
+
     // 1. 完全一致検索
     for (const [category, data] of Object.entries(garbageDatabase)) {
         if (data.items.some(item => item.toLowerCase() === query)) {
@@ -239,27 +251,32 @@ function findGarbageCategory(query) {
 function displayResult(result) {
     const { category, data, item } = result;
     
-    // 地域の収集スケジュールを取得
-    const regionSchedule = getScheduleByRegion(userRegion, category);
-    const regionInfo = regionData[userRegion];
-    
     let collectionSchedule = data.collection; // デフォルトの収集情報
     let nextCollectionInfo = '';
     
-    if (regionSchedule && regionInfo) {
-        // 地域固有の収集スケジュールがある場合
-        if (regionSchedule.days.includes('回収ボックス')) {
-            collectionSchedule = `回収ボックス（${regionInfo.name}）`;
-        } else {
-            const daysList = regionSchedule.days.join('・');
-            collectionSchedule = `${daysList} ${regionSchedule.time}〜（${regionInfo.name}）`;
-            
-            // 次回収集日を計算
-            const nextDate = getNextCollectionDate(userRegion, category);
-            if (nextDate) {
-                nextCollectionInfo = `<div class="next-collection"><strong>📅 次回収集予定：</strong> ${formatDate(nextDate)}</div>`;
+    // 地域が選択されている場合のみ、地域固有の収集スケジュールを取得
+    if (userRegion && regionData[userRegion]) {
+        const regionSchedule = getScheduleByRegion(userRegion, category);
+        const regionInfo = regionData[userRegion];
+        
+        if (regionSchedule && regionInfo) {
+            // 地域固有の収集スケジュールがある場合
+            if (regionSchedule.days.includes('回収ボックス')) {
+                collectionSchedule = `回収ボックス（${regionInfo.name}）`;
+            } else {
+                const daysList = regionSchedule.days.join('・');
+                collectionSchedule = `${daysList} ${regionSchedule.time}〜（${regionInfo.name}）`;
+                
+                // 次回収集日を計算
+                const nextDate = getNextCollectionDate(userRegion, category);
+                if (nextDate) {
+                    nextCollectionInfo = `<div class="next-collection"><strong>📅 次回収集予定：</strong> ${formatDate(nextDate)}</div>`;
+                }
             }
         }
+    } else {
+        // 地域未選択の場合
+        collectionSchedule += ' <span class="region-notice">（地域を選択すると詳細な収集日をお知らせします）</span>';
     }
     
     resultDiv.style.background = data.color;
@@ -551,11 +568,12 @@ function displayCollectionCalendar() {
     
     calendarDiv.innerHTML = '';
     
-    const regionInfo = regionData[userRegion];
-    if (!regionInfo) {
-        calendarDiv.innerHTML = '<p>地域情報が設定されていません</p>';
+    if (!userRegion || !regionData[userRegion]) {
+        calendarDiv.innerHTML = '<p class="region-notice">📍 お住まいの地域を選択すると収集カレンダーを表示します</p>';
         return;
     }
+    
+    const regionInfo = regionData[userRegion];
     
     // カレンダーのヘッダー
     const header = document.createElement('div');
@@ -655,11 +673,11 @@ function getTodaysCollection() {
     const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
     const todayName = dayNames[today.getDay()];
     
-    const regionInfo = regionData[userRegion];
-    if (!regionInfo) {
-        return '🎌 地域情報が設定されていません';
+    if (!userRegion || !regionData[userRegion]) {
+        return '📍 お住まいの地域を選択すると収集日を表示します';
     }
     
+    const regionInfo = regionData[userRegion];
     const todaysCollections = [];
     
     // 各ゴミ種別の収集日をチェック（統一されたisCollectionDay関数を使用）
@@ -674,7 +692,7 @@ function getTodaysCollection() {
     }
     
     const collectionList = todaysCollections.join('・');
-    return `🗑️ 今日（${todayName}曜日）は${regionInfo.name}で【${collectionList}】の収集日です`;
+    return `🗑️今日（${todayName}曜日）は${regionInfo.name}で【${collectionList}】の収集日です`;
 }
 
 // 収集情報を表示
@@ -778,31 +796,27 @@ function initializeRegion() {
     
     console.log('利用可能な地域:', Object.keys(regionData));
     
-    const regionInfo = regionData[userRegion];
-    if (regionInfo) {
-        console.log('現在の地域情報:', regionInfo);
+    if (userRegion && regionData[userRegion]) {
+        // 地域が選択済みで有効な場合
+        console.log('現在の地域情報:', regionData[userRegion]);
         updateCurrentRegionDisplay();
         populateRegionSelect();
     } else {
-        console.warn('地域情報が見つかりません:', userRegion);
-        // デフォルト地域を設定
-        userRegion = 'kuki-d';
-        localStorage.setItem('userRegion', userRegion);
-        console.log('デフォルト地域に設定:', userRegion);
-        
-        const defaultRegionInfo = regionData[userRegion];
-        if (defaultRegionInfo) {
-            updateCurrentRegionDisplay();
-            populateRegionSelect();
-        }
+        // 地域が未選択または無効な場合
+        console.log('地域が未選択です');
+        updateCurrentRegionDisplay(); // 「未選択」を表示
+        populateRegionSelect();
     }
 }
 
 function updateCurrentRegionDisplay() {
     const currentRegionSpan = document.getElementById('currentRegion');
-    const regionInfo = regionData[userRegion];
-    if (currentRegionSpan && regionInfo) {
-        currentRegionSpan.textContent = regionInfo.name;
+    if (currentRegionSpan) {
+        if (userRegion && regionData[userRegion]) {
+            currentRegionSpan.textContent = regionData[userRegion].name;
+        } else {
+            currentRegionSpan.textContent = '地域を選択してください';
+        }
     }
 }
 
@@ -877,6 +891,9 @@ function changeRegion() {
         
         // 収集カレンダーを更新
         displayCollectionCalendar();
+    } else if (!newRegion) {
+        // 地域選択をクリア
+        showStatus('地域を選択してください', 'error');
     }
     
     // モーダルを閉じる
@@ -1003,12 +1020,12 @@ function handleCollectionQuery(query) {
     console.log('クエリ:', query);
     console.log('現在の地域:', userRegion);
     
-    const regionInfo = regionData[userRegion];
-    if (!regionInfo) {
+    if (!userRegion || !regionData[userRegion]) {
         console.error('地域情報が見つかりません:', userRegion);
-        return '地域情報が設定されていません。';
+        return 'お住まいの地域を選択してから収集日をお調べください。';
     }
     
+    const regionInfo = regionData[userRegion];
     console.log('地域情報:', regionInfo.name);
     
     const today = new Date();

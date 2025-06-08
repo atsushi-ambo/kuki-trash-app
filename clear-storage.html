@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LocalStorage クリア</title>
+</head>
+<body>
+    <h1>LocalStorage 確認・クリア</h1>
+    <button onclick="checkStorage()">現在の設定を確認</button>
+    <button onclick="clearStorage()">設定をクリア</button>
+    <button onclick="location.href='/'">メインアプリに戻る</button>
+    <div id="output"></div>
+
+    <script>
+        function checkStorage() {
+            const userRegion = localStorage.getItem('userRegion');
+            const recentSearches = localStorage.getItem('recentSearches');
+            document.getElementById('output').innerHTML = `
+                <h3>現在のLocalStorage:</h3>
+                <p>userRegion: ${userRegion}</p>
+                <p>recentSearches: ${recentSearches}</p>
+            `;
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('userRegion');
+            localStorage.removeItem('recentSearches');
+            document.getElementById('output').innerHTML = '<p>LocalStorageをクリアしました</p>';
+        }
+
+        // ページ読み込み時に自動確認
+        checkStorage();
+    </script>
+</body>
+</html>

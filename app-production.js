@@ -1,7 +1,7 @@
 // 久喜市ゴミ分別アプリ - Production Version
 // Production version with debug logs removed for optimal performance
 
-let userRegion = localStorage.getItem('userRegion') || 'kuki-d';
+let userRegion = localStorage.getItem('userRegion') || null;
 let isListening = false;
 let recognition = null;
 let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
@@ -60,8 +60,12 @@ function changeRegion() {
 
 // 現在の地域表示を更新
 function updateRegionDisplay() {
-    if (currentRegionDisplay && regionData[userRegion]) {
-        currentRegionDisplay.textContent = regionData[userRegion].name;
+    if (currentRegionDisplay) {
+        if (userRegion && regionData[userRegion]) {
+            currentRegionDisplay.textContent = regionData[userRegion].name;
+        } else {
+            currentRegionDisplay.textContent = '地域を選択してください';
+        }
     }
 }
 
