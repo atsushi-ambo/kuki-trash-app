@@ -182,17 +182,6 @@ docker stats kuki-trash-app-container
 - `http://localhost:3000/test-summary.html` - 実装状況の確認
 - `http://localhost:3000/debug-region.html` - 地域機能のデバッグ
 
-### 💻 従来のNode.js環境での実行（オプション）
-
-Dockerを使用しない場合：
-
-```bash
-# Node.js環境が必要 (v14以上)
-npm install
-npm run dev
-# http://localhost:3000
-```
-
 ## 📋 ゴミ分別カテゴリ
 
 ### 主要カテゴリ
