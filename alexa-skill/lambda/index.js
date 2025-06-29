@@ -704,7 +704,29 @@ const SetLocationIntentHandler = {
         let repromptText = 'ペットボトル、缶、プラスチックなど、どのゴミについて知りたいですか？';
         
         if (locationSlot && locationSlot.value) {
-            const locationCode = extractLocationFromPhrase(locationSlot.value);
+            let locationCode = null;
+            
+            // First, try to use slot resolution if available
+            if (locationSlot.resolutions && 
+                locationSlot.resolutions.resolutionsPerAuthority && 
+                locationSlot.resolutions.resolutionsPerAuthority[0] &&
+                locationSlot.resolutions.resolutionsPerAuthority[0].status &&
+                locationSlot.resolutions.resolutionsPerAuthority[0].status.code === 'ER_SUCCESS_MATCH' &&
+                locationSlot.resolutions.resolutionsPerAuthority[0].values &&
+                locationSlot.resolutions.resolutionsPerAuthority[0].values[0]) {
+                
+                const resolvedValue = locationSlot.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+                console.log(`Slot resolved to: ${resolvedValue}`);
+                locationCode = extractLocationFromPhrase(resolvedValue);
+            }
+            
+            // If slot resolution didn't work, fall back to phrase extraction
+            if (!locationCode) {
+                console.log(`Falling back to phrase extraction for: ${locationSlot.value}`);
+                locationCode = extractLocationFromPhrase(locationSlot.value);
+            }
+            
+            console.log(`Final location code: ${locationCode}`);
             
             if (locationCode && regionData[locationCode]) {
                 // Save location to session
