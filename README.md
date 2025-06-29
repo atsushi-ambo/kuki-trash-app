@@ -38,8 +38,6 @@ kuki-trash-app/
 └── docs/                          # プロジェクトドキュメント
 ```
 
-詳細な構成については [DIRECTORY-STRUCTURE.md](DIRECTORY-STRUCTURE.md) をご覧ください。
-
 ## 🌟 主な機能
 
 ### 🏠 地域対応機能
@@ -486,4 +484,4 @@ MIT License
 - **スケーラブル**: 将来の機能追加に対応
 - **保守性**: ファイルの発見と修正が容易
 
-詳細については [DIRECTORY-STRUCTURE.md](DIRECTORY-STRUCTURE.md) と [REFACTORING-SUMMARY.md](REFACTORING-SUMMARY.md) をご覧ください。
+---
