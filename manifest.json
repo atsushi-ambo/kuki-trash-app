@@ -9,22 +9,22 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192x192.svg",
+      "src": "src/web/assets/icons/icon-192x192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml"
     },
     {
-      "src": "icon-512x512.svg",
+      "src": "src/web/assets/icons/icon-512x512.svg",
       "sizes": "512x512",
       "type": "image/svg+xml"
     },
     {
-      "src": "icon-192x192.png",
+      "src": "src/web/assets/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512x512.png",
+      "src": "src/web/assets/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

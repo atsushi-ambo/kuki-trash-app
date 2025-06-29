@@ -1,0 +1,134 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "久喜市ゴミ分別",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "GarbageSearchIntent",
+          "slots": [
+            {
+              "name": "GarbageItem",
+              "type": "GARBAGE_ITEMS"
+            }
+          ],
+          "samples": [
+            "ペットボトルの分別方法を教えて",
+            "缶はどうやって捨てますか",
+            "プラスチックについて教えて",
+            "びんの捨て方を教えて",
+            "{GarbageItem} の分別方法を教えて",
+            "{GarbageItem} はどうやって捨てますか",
+            "{GarbageItem} について教えて",
+            "{GarbageItem} の分別は",
+            "{GarbageItem} の捨て方は",
+            "{GarbageItem} はどう捨てる",
+            "{GarbageItem} の分別を教えて",
+            "{GarbageItem} はどうすればいい",
+            "{GarbageItem} の処理方法",
+            "{GarbageItem} を教えて",
+            "{GarbageItem} について",
+            "{GarbageItem} の情報",
+            "{GarbageItem} はどうする"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "GARBAGE_ITEMS",
+          "values": [
+            {
+              "name": {
+                "value": "ペットボトル",
+                "synonyms": [
+                  "ペット",
+                  "ペットボトル",
+                  "ペット容器"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "缶",
+                "synonyms": [
+                  "缶",
+                  "空き缶",
+                  "アルミ缶",
+                  "スチール缶"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "びん",
+                "synonyms": [
+                  "びん",
+                  "瓶",
+                  "ビン",
+                  "ガラス瓶"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "プラスチック",
+                "synonyms": [
+                  "プラスチック",
+                  "プラ",
+                  "プラスチック容器"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "ビニール袋",
+                "synonyms": [
+                  "ビニール袋",
+                  "ビニール",
+                  "レジ袋",
+                  "袋"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "新聞",
+                "synonyms": [
+                  "新聞",
+                  "新聞紙",
+                  "しんぶん"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "段ボール",
+                "synonyms": [
+                  "段ボール",
+                  "ダンボール",
+                  "だんぼーる",
+                  "箱"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -11,18 +11,8 @@ WORKDIR /usr/share/nginx/html
 
 # アプリケーションファイルをコピー
 COPY index.html .
-COPY app.js .
-COPY garbageData.js .
-COPY regionData.js .
-COPY styles.css .
-COPY sw.js .
+COPY src/ ./src/
 COPY manifest.json .
-COPY favicon.png .
-COPY favicon.svg .
-COPY icon-192x192.png .
-COPY icon-192x192.svg .
-COPY icon-512x512.png .
-COPY icon-512x512.svg .
 
 # Nginxの設定ファイルをコピー
 COPY docker/nginx.conf /etc/nginx/nginx.conf

@@ -1,0 +1,412 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "久喜市ゴミ分別",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "GarbageSearchIntent",
+          "slots": [
+            {
+              "name": "GarbageItem",
+              "type": "GARBAGE_ITEMS"
+            },
+            {
+              "name": "Location",
+              "type": "KUKI_LOCATIONS"
+            }
+          ],
+          "samples": [
+            "{GarbageItem}",
+            "{GarbageItem} について",
+            "{GarbageItem} を教えて",
+            "{GarbageItem} の分別",
+            "{GarbageItem} の分別は",
+            "{GarbageItem} の分別方法",
+            "{GarbageItem} の捨て方",
+            "{GarbageItem} はどうする",
+            "{GarbageItem} はどう捨てる",
+            "{GarbageItem} について教えて",
+            "{GarbageItem} の分別方法を教えて",
+            "{GarbageItem} はどうやって捨てますか",
+            "{GarbageItem} の分別を教えて",
+            "{GarbageItem} はどうすればいい",
+            "{GarbageItem} の処理方法",
+            "{GarbageItem} の情報",
+            "{Location} の {GarbageItem}",
+            "{Location} では {GarbageItem} はいつ",
+            "{Location} の {GarbageItem} の収集日"
+          ]
+        },
+        {
+          "name": "SetLocationIntent",
+          "slots": [
+            {
+              "name": "Location",
+              "type": "KUKI_LOCATIONS"
+            }
+          ],
+          "samples": [
+            "{Location} に住んでいます",
+            "{Location} です",
+            "私は {Location} に住んでいます",
+            "住所は {Location} です",
+            "{Location} 地区です",
+            "{Location} に設定して",
+            "地区は {Location}",
+            "{Location} を設定"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "GARBAGE_ITEMS",
+          "values": [
+            {
+              "name": {
+                "value": "ペットボトル",
+                "synonyms": [
+                  "ペット",
+                  "ペットボトル",
+                  "ペット容器",
+                  "ペットボトル容器",
+                  "ボトル"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "缶",
+                "synonyms": [
+                  "缶",
+                  "空き缶",
+                  "アルミ缶",
+                  "スチール缶",
+                  "かん",
+                  "飲料缶",
+                  "缶詰"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "びん",
+                "synonyms": [
+                  "びん",
+                  "瓶",
+                  "ビン",
+                  "ガラス瓶",
+                  "ガラスびん",
+                  "空きびん"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "プラスチック",
+                "synonyms": [
+                  "プラスチック",
+                  "プラ",
+                  "プラスチック容器",
+                  "プラスチック製品"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "ビニール袋",
+                "synonyms": [
+                  "ビニール袋",
+                  "ビニール",
+                  "レジ袋",
+                  "袋",
+                  "ビニル袋",
+                  "ポリ袋"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "新聞",
+                "synonyms": [
+                  "新聞",
+                  "新聞紙",
+                  "しんぶん",
+                  "ニュースペーパー",
+                  "チラシ"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "段ボール",
+                "synonyms": [
+                  "段ボール",
+                  "ダンボール",
+                  "だんぼーる",
+                  "箱",
+                  "段ボール箱"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "生ゴミ",
+                "synonyms": [
+                  "生ゴミ",
+                  "生ごみ",
+                  "なまごみ",
+                  "食べ残し",
+                  "野菜くず",
+                  "果物の皮"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "紙おむつ",
+                "synonyms": [
+                  "紙おむつ",
+                  "おむつ",
+                  "オムツ",
+                  "ティッシュ",
+                  "ティッシュペーパー"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "衣類",
+                "synonyms": [
+                  "衣類",
+                  "服",
+                  "ふく",
+                  "シャツ",
+                  "ズボン",
+                  "Tシャツ",
+                  "洋服"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "金属製品",
+                "synonyms": [
+                  "金属製品",
+                  "金属",
+                  "なべ",
+                  "やかん",
+                  "包丁",
+                  "フライパン",
+                  "はさみ"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "スプレー缶",
+                "synonyms": [
+                  "スプレー缶",
+                  "スプレー",
+                  "カセットボンベ",
+                  "ガス缶"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "ガラス",
+                "synonyms": [
+                  "ガラス",
+                  "グラス",
+                  "コップ",
+                  "鏡",
+                  "陶器",
+                  "茶碗",
+                  "皿"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "雑誌",
+                "synonyms": [
+                  "雑誌",
+                  "ざっし",
+                  "本",
+                  "週刊誌",
+                  "漫画",
+                  "小説"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "電池",
+                "synonyms": [
+                  "電池",
+                  "でんち",
+                  "バッテリー",
+                  "乾電池",
+                  "ボタン電池"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "蛍光灯",
+                "synonyms": [
+                  "蛍光灯",
+                  "電球",
+                  "LED電球",
+                  "白熱電球"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "家具",
+                "synonyms": [
+                  "家具",
+                  "テーブル",
+                  "椅子",
+                  "タンス",
+                  "ベッド",
+                  "ソファー"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "自転車",
+                "synonyms": [
+                  "自転車",
+                  "じてんしゃ",
+                  "チャリ",
+                  "バイク"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "テレビ",
+                "synonyms": [
+                  "テレビ",
+                  "冷蔵庫",
+                  "洗濯機",
+                  "エアコン",
+                  "家電"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "KUKI_LOCATIONS",
+          "values": [
+            {
+              "name": {
+                "value": "久喜",
+                "synonyms": [
+                  "久喜",
+                  "久喜地区",
+                  "久喜市"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "菖蒲",
+                "synonyms": [
+                  "菖蒲",
+                  "菖蒲地区",
+                  "しょうぶ"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "鷲宮",
+                "synonyms": [
+                  "鷲宮",
+                  "鷲宮地区",
+                  "わしのみや"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "栗橋",
+                "synonyms": [
+                  "栗橋",
+                  "栗橋地区",
+                  "くりはし"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "青毛",
+                "synonyms": [
+                  "青毛",
+                  "あおげ"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "本町",
+                "synonyms": [
+                  "本町",
+                  "ほんちょう"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "久喜中央",
+                "synonyms": [
+                  "久喜中央",
+                  "中央"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "青葉",
+                "synonyms": [
+                  "青葉",
+                  "あおば"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "桜田",
+                "synonyms": [
+                  "桜田",
+                  "さくらだ"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

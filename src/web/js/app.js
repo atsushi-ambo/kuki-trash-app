@@ -392,7 +392,7 @@ function initApp() {
     // Service Workerの登録（PWA対応）
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js')
+            navigator.serviceWorker.register('/src/web/js/sw.js')
                 .then(function(registration) {
                     console.log('Service Worker登録成功:', registration.scope);
                 })
@@ -747,7 +747,7 @@ function initializeApp() {
     
     // Service Worker登録
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
+        navigator.serviceWorker.register('src/web/js/sw.js')
             .then(registration => {
                 console.log('Service Worker registered successfully');
             })

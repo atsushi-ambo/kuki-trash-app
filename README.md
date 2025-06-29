@@ -3,15 +3,42 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 [![PWA](https://img.shields.io/badge/PWA-Ready-green.svg)](https://developer.mozilla.org/ja/docs/Web/Progressive_web_apps)
+[![Alexa](https://img.shields.io/badge/Alexa-Ready-orange.svg)](https://developer.amazon.com/alexa)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-埼玉県久喜市のゴミ分別ルールを音声で案内するProgressive Web Application（PWA）です。久喜市公式ごみ分別辞典サイト「ごみサク」の公開情報に基づき、音声認識と音声案内機能で直感的にゴミの分別方法を検索できます。
+埼玉県久喜市のゴミ分別ルールを音声で案内するProgressive Web Application（PWA）とAmazon Alexaスキルです。久喜市公式ごみ分別辞典サイト「ごみサク」の公開情報に基づき、音声認識と音声案内機能で直感的にゴミの分別方法を検索できます。
 
 ![アプリのスクリーンショット](docs/images/app-screenshot.png)
 
 > **⚠️ 重要な注意事項**  
 > これは **個人開発のアプリケーション** であり、久喜市公式のアプリではありません。  
 > 詳細な免責事項は文末をご確認ください。
+
+## 🏗️ プロジェクト構成
+
+```
+kuki-trash-app/
+├── src/                           # ソースコード
+│   ├── web/                       # Webアプリケーション
+│   │   ├── js/                    # JavaScript files
+│   │   ├── css/                   # スタイルシート
+│   │   └── assets/                # 静的ファイル（アイコン等）
+│   └── shared/                    # 共有データファイル
+│       ├── garbageData.js         # ゴミ分別データ
+│       └── regionData.js          # 地域収集スケジュール
+├── alexa-skill/                   # Alexaスキル
+│   ├── lambda/                    # Lambda関数コード
+│   ├── models/                    # 対話モデル
+│   └── docs/                      # Alexaスキル用ドキュメント
+├── tests/                         # テストファイル
+│   ├── web/                       # Webアプリテスト
+│   └── alexa/                     # Alexaスキルテスト
+├── tools/                         # 開発ツール
+├── docker/                        # Docker設定
+└── docs/                          # プロジェクトドキュメント
+```
+
+詳細な構成については [DIRECTORY-STRUCTURE.md](DIRECTORY-STRUCTURE.md) をご覧ください。
 
 ## 🌟 主な機能
 
@@ -43,11 +70,13 @@
 - **10の分別種別**: 燃やせるごみ、燃やせないごみ、資源プラスチック類、びん・缶・ペットボトル等
 - **最新情報**: 2025年6月時点の公式情報を反映
 
-### 💻 モダンなWebアプリ
+### 💻 モダンなWebアプリ + Alexaスキル
 - **PWA対応**: ホーム画面に追加してアプリのように使用可能
 - **オフライン機能**: Service Workerによるキャッシュ機能
 - **レスポンシブ**: PC・タブレット・スマートフォンに完全対応
 - **高速**: 軽量設計で素早い動作、Docker対応
+- **Alexaスキル**: Amazon Echoデバイスでの音声操作に対応
+- **地域連携**: WebアプリとAlexaスキルで同一データソース使用
 
 ### 🎯 ユーザビリティ
 - **収集カレンダー**: 地区別14日間の収集予定を表示
@@ -92,18 +121,19 @@
 
 ## 🛠️ 開発・実行環境のセットアップ
 
-このアプリケーションは **Docker** を使用して統一的に開発・実行できます。
+このアプリケーションは **Docker** を使用して統一的に開発・実行できます。WebアプリとAlexaスキルの両方が含まれています。
 
 ### 必要なソフトウェア
 - [Docker](https://www.docker.com/get-started) 
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - Git
+- Node.js 18+ (Alexaスキル開発時のみ)
 
 ### 🐳 Dockerを使用した開発環境のセットアップ（推奨）
 
 #### 1. リポジトリのクローン
 ```bash
-git clone https://github.com/atsushi-ambo/kuki-trash-app.git
+git clone https://github.com/your-username/kuki-trash-app.git
 cd kuki-trash-app
 ```
 
@@ -131,9 +161,26 @@ docker run -d --name kuki-trash-app-container -p 3000:80 kuki-trash-app
 # http://localhost:3000
 ```
 
-### 🔄 開発時のコマンド
+### 🎤 Alexaスキル開発環境
 
 ```bash
+# Alexaスキル開発ディレクトリに移動
+cd alexa-skill/lambda
+
+# 依存関係のインストール
+npm install
+
+# ローカルテストの実行
+npm test
+
+# テスト用のスクリプト実行 
+node ../tests/alexa/test-local.js
+```
+
+### � 開発時のコマンド
+
+```bash
+# Webアプリの開発
 # コンテナの停止
 docker-compose down
 
@@ -153,12 +200,19 @@ docker-compose up -d --build
 ### 🧪 テストの実行
 
 ```bash
-# テストコンテナでの実行
+# Webアプリのテスト
+npm test
+
+# またはDockerコンテナでのテスト
 docker run --rm -v $(pwd):/app -w /app node:18-alpine npm test
 
-# または、実行中のコンテナ内でテスト
-docker exec -it kuki-trash-app-container sh
-# コンテナ内で: node test.js
+# Alexaスキルのテスト
+cd alexa-skill/lambda
+npm test
+
+# ローカルAlexaテスト
+cd tests/alexa
+node test-local.js
 ```
 
 ### 🔍 デバッグとトラブルシューティング
@@ -178,9 +232,11 @@ docker stats kuki-trash-app-container
 
 開発時に便利な以下のページも利用できます：
 
-- `http://localhost:3000/voice-region-test.html` - 音声認識地域機能のテスト
-- `http://localhost:3000/test-summary.html` - 実装状況の確認
-- `http://localhost:3000/debug-region.html` - 地域機能のデバッグ
+- `http://localhost:3000/tests/web/voice-region-test.html` - 音声認識地域機能のテスト
+- `http://localhost:3000/tests/web/test-summary.html` - 実装状況の確認
+- `http://localhost:3000/tests/web/debug-region.html` - 地域機能のデバッグ
+- `http://localhost:3000/tools/clear-storage.html` - ローカルストレージ管理
+- `http://localhost:3000/tools/create-icons.html` - アイコン生成ツール
 
 ## 📋 ゴミ分別カテゴリ
 
@@ -224,6 +280,7 @@ docker stats kuki-trash-app-container
 
 ## 🔧 技術仕様
 
+### Webアプリケーション
 - **フロントエンド**: HTML5, CSS3, JavaScript (ES6+)
 - **音声認識**: Web Speech API
 - **音声合成**: Speech Synthesis API
@@ -231,6 +288,19 @@ docker stats kuki-trash-app-container
 - **PWA機能**: Service Worker, Web App Manifest
 - **コンテナ**: Docker + Nginx
 - **地域対応**: 14地域の収集スケジュール対応
+
+### Alexaスキル
+- **ランタイム**: Node.js 18+
+- **フレームワーク**: Alexa Skills Kit SDK v2
+- **ホスティング**: Alexa-hosted Skills（完全無料）
+- **データソース**: Webアプリと共通のJSONデータ
+- **地域機能**: セッション属性による地域設定
+- **対話モデル**: 複数の対話モデル（基本・拡張・複合）
+
+### 共有データ
+- **ゴミ分別データ**: `src/shared/garbageData.js`
+- **地域スケジュール**: `src/shared/regionData.js`
+- **データ形式**: JavaScript modules（CommonJS/ES6両対応）
 
 ## 🐳 本番環境でのDocker活用
 
@@ -258,28 +328,67 @@ docker push atsushi-ambo/kuki-trash-app:latest
 
 ## 📝 TODO
 
+### Webアプリ
 - [x] PWA対応（オフライン機能）
 - [x] 地域別収集スケジュール対応
 - [x] 音声認識地域情報統合
 - [x] Docker環境整備
-- [x] Amazon Alexa スキル完成（Alexa-hosted Skills対応）
-- [ ] Google Assistant アクション開発
-- [ ] 多言語対応
+- [x] ディレクトリ構造の整理・リファクタリング
 - [ ] ゴミ出し忘れ通知機能
 - [ ] 収集カレンダー表示機能
 
+### Alexaスキル
+- [x] Amazon Alexa スキル完成（Alexa-hosted Skills対応）
+- [x] 地域対応機能（セッション管理）
+- [x] 包括的なゴミ分別データベース統合
+- [x] 複数の対話モデル作成
+- [x] ローカルテスト環境構築
+- [ ] Alexa スキルストア公開
+- [ ] より自然な対話フロー改善
+- [ ] 定期的な収集日通知機能
+
+### プロジェクト全体
+- [x] 共有データファイルの統一
+- [x] プロジェクト構成の最適化
+- [ ] CI/CD パイプライン構築
+- [ ] 自動テストの拡充
+
 ## 🎯 Alexaスキル開発
 
-`alexa-skill/` フォルダにAmazon Alexaスキルの開発環境が含まれています。現在のWebアプリの検索ロジックとデータベースをそのまま活用できる設計になっています。
+`alexa-skill/` フォルダにAmazon Alexaスキルの完全な実装が含まれています。WebアプリのデータとロジックをAlexaデバイスでも利用できます。
+
+### 主な特徴
+- **地域対応**: Webアプリと同等の14地域サポート
+- **詳細な分別案内**: 包括的なゴミ分別データベース
+- **自然な対話**: 複数の対話モデルによる柔軟な音声認識
+- **セッション管理**: ユーザーの地域設定を記憶
 
 ### ローカル開発・テスト
 
 ```bash
-# Alexaスキルのテスト
+# Alexaスキルのディレクトリに移動
 cd alexa-skill/lambda
+
+# 依存関係のインストール
 npm install
+
+# テストの実行
 npm test
+
+# ローカルテスト（模擬リクエスト）
+cd ../../tests/alexa
+node test-local.js
 ```
+
+### 利用可能な対話モデル
+
+`alexa-skill/models/` に以下の対話モデルが含まれています：
+
+- **`interactionModel.json`** - 基本モデル
+- **`interactionModel-with-location.json`** - 地域機能付きモデル（推奨）  
+- **`interactionModel-complex.json`** - 複合モデル
+- **`interactionModel-fixed.json`** - 修正版モデル
+- **`interactionModel-improved.json`** - 改良版モデル
 
 ### デプロイ方法
 
@@ -287,20 +396,19 @@ npm test
 
 Amazon Alexaが提供する **完全無料のホスティングサービス** です。追加料金なしでAlexaスキルを公開できます。
 
-```bash
-# 1. Alexa Developer Console (developer.amazon.com/alexa/console/ask) でスキル作成
-#    - スキル名: 久喜市ゴミ分別アプリ
-#    - 言語: Japanese  
-#    - Experience: Other
-#    - Model: Custom
-#    - Hosting: 🆓 Alexa-hosted (Node.js) ← 完全無料オプション
+**手順:**
+1. [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask) でスキル作成
+   - スキル名: 久喜市ゴミ分別アプリ
+   - 言語: Japanese  
+   - Experience: Other
+   - Model: Custom
+   - Hosting: **🆓 Alexa-hosted (Node.js)** ← 完全無料オプション
 
-# 2. alexa-skill/lambda/ のファイルをDeveloper Console内のエディタにコピー
+2. `alexa-skill/lambda/` のファイルをDeveloper Console内のCode エディタにコピー
 
-# 3. alexa-skill/interactionModel.json を Build タブでインポート
+3. `alexa-skill/models/interactionModel-with-location.json` を Build タブでインポート
 
-# 4. テスト・公開（久喜市の人口規模なら完全に無料枠内で運用可能）
-```
+4. テスト・公開（久喜市の人口規模なら完全に無料枠内で運用可能）
 
 **無料枠の詳細:**
 - 🎯 AWS Lambda: 月間100万リクエスト無料
@@ -308,6 +416,8 @@ Amazon Alexaが提供する **完全無料のホスティングサービス** �
 - 📁 S3ストレージ: 5GBまで無料
 - 🌐 データ転送: 15GB/月まで無料
 - ✅ 久喜市の人口約15万人→仮に1日1000リクエストでも月間3万リクエスト程度
+
+詳細な手順は `alexa-skill/docs/ALEXA-HOSTED-DEPLOYMENT.md` をご覧ください。
 
 #### 手動デプロイ（上級者向け・有料）
 ```bash
@@ -320,13 +430,6 @@ zip -r ../kuki-alexa-skill.zip .
 # - Runtime: Node.js 18.x
 # - ZIPファイルをアップロード
 ```
-
-#### 3. Alexa Developer Consoleでの設定
-1. https://developer.amazon.com/alexa/console/ask にアクセス
-2. 新しいスキルを作成
-3. **「Alexa-hosted (Node.js)」を選択** ← 重要！
-4. `interactionModel.json` を使用してスキルを設定
-5. ホスティングは自動で設定される（無料）
 
 **注意**: AlexaスキルはAWS Lambda用に設計されており、ローカルDockerコンテナでの実行は不要です。
 
@@ -355,3 +458,32 @@ MIT License
 ## 🤝 貢献
 
 プルリクエストやイシューの報告を歓迎します！
+
+### 開発に参加する場合
+
+1. **フォーク**: このリポジトリをフォーク
+2. **ブランチ作成**: `git checkout -b feature/your-feature-name`
+3. **開発**: 新しい機能やバグ修正を実装
+4. **テスト**: `npm test` でテストを実行
+5. **コミット**: `git commit -m "Add your feature"`
+6. **プッシュ**: `git push origin feature/your-feature-name` 
+7. **プルリクエスト**: GitHubでプルリクエストを作成
+
+### 開発のヒント
+
+- **Webアプリ**: `src/web/` でフロントエンド開発
+- **Alexaスキル**: `alexa-skill/lambda/` でバックエンド開発
+- **共有データ**: `src/shared/` でデータ更新
+- **テスト**: `tests/` でテストコード作成
+- **ツール**: `tools/` で開発用ユーティリティ
+
+### プロジェクト構成の改善
+
+このプロジェクトは最近、保守性と開発効率向上のために大幅なディレクトリ構造の改善を行いました：
+
+- **論理的なグループ化**: 関連ファイルの整理
+- **明確な分離**: Web、Alexa、テスト、ツールの分離
+- **スケーラブル**: 将来の機能追加に対応
+- **保守性**: ファイルの発見と修正が容易
+
+詳細については [DIRECTORY-STRUCTURE.md](DIRECTORY-STRUCTURE.md) と [REFACTORING-SUMMARY.md](REFACTORING-SUMMARY.md) をご覧ください。

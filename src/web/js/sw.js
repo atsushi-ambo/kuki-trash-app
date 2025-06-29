@@ -3,13 +3,14 @@ const CACHE_NAME = 'kuki-garbage-app-v2.0';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/garbageData.js',
+  '/src/web/css/styles.css',
+  '/src/web/js/app.js',
+  '/src/shared/garbageData.js',
+  '/src/shared/regionData.js',
   '/manifest.json',
-  '/favicon.svg',
-  '/icon-192x192.svg',
-  '/icon-512x512.svg'
+  '/src/web/assets/icons/favicon.svg',
+  '/src/web/assets/icons/icon-192x192.svg',
+  '/src/web/assets/icons/icon-512x512.svg'
 ];
 
 // インストール時にキャッシュを作成
