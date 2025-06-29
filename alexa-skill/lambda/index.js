@@ -3,7 +3,7 @@ console.log('index.js: File loading started.');
 const Alexa = require('ask-sdk-core');
 console.log('index.js: Alexa SDK Core loaded.');
 
-// Import region data (simplified version for Alexa)
+// Import region data (comprehensive version matching web app)
 const regionData = {
     'kuki-a': {
         name: '久喜地区Aブロック',
@@ -55,6 +55,16 @@ const regionData = {
             '新聞・段ボール': { days: ['第1・第3水曜日'], time: '8:30' }
         }
     },
+    'shobu-b': {
+        name: '菖蒲地区Bブロック',
+        areas: ['菖蒲町新堀', '菖蒲町小林', '菖蒲町下栢間', '菖蒲町上栢間'],
+        schedule: {
+            '燃やせるごみ': { days: ['火曜日', '金曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['月曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['月曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第2・第4水曜日'], time: '8:30' }
+        }
+    },
     'washinomiya-a': {
         name: '鷲宮地区Aブロック',
         areas: ['桜田'],
@@ -63,6 +73,76 @@ const regionData = {
             '資源プラスチック類': { days: ['火曜日'], time: '8:30' },
             'びん・缶・ペットボトル': { days: ['火曜日'], time: '8:30' },
             '新聞・段ボール': { days: ['第1・第3水曜日'], time: '8:30' }
+        }
+    },
+    'washinomiya-b': {
+        name: '鷲宮地区Bブロック',
+        areas: ['鷲宮', '鷲宮中央', '鷲宮東'],
+        schedule: {
+            '燃やせるごみ': { days: ['火曜日', '金曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['月曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['月曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第2・第4水曜日'], time: '8:30' }
+        }
+    },
+    'washinomiya-c': {
+        name: '鷲宮地区Cブロック',
+        areas: ['西大輪', '東大輪', '外野', '内野'],
+        schedule: {
+            '燃やせるごみ': { days: ['月曜日', '木曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['火曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['火曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第1・第3水曜日'], time: '8:30' }
+        }
+    },
+    'washinomiya-d': {
+        name: '鷲宮地区Dブロック',
+        areas: ['葛梅', '幸手', '南栗橋'],
+        schedule: {
+            '燃やせるごみ': { days: ['火曜日', '金曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['月曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['月曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第2・第4水曜日'], time: '8:30' }
+        }
+    },
+    'kurihashi-e': {
+        name: '栗橋地区Eブロック',
+        areas: ['栗橋北', '栗橋中央', '栗橋'],
+        schedule: {
+            '燃やせるごみ': { days: ['月曜日', '木曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['火曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['火曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第1・第3水曜日'], time: '8:30' }
+        }
+    },
+    'kurihashi-f': {
+        name: '栗橋地区Fブロック',
+        areas: ['栗橋東', '栗橋西', '間鎌'],
+        schedule: {
+            '燃やせるごみ': { days: ['火曜日', '金曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['月曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['月曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第2・第4水曜日'], time: '8:30' }
+        }
+    },
+    'kurihashi-g': {
+        name: '栗橋地区Gブロック',
+        areas: ['除堀', '砂原', '高柳'],
+        schedule: {
+            '燃やせるごみ': { days: ['月曜日', '木曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['火曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['火曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第1・第3水曜日'], time: '8:30' }
+        }
+    },
+    'kurihashi-h': {
+        name: '栗橋地区Hブロック',
+        areas: ['伊坂', '小右衛門', '南栗橋'],
+        schedule: {
+            '燃やせるごみ': { days: ['火曜日', '金曜日'], time: '8:30' },
+            '資源プラスチック類': { days: ['月曜日'], time: '8:30' },
+            'びん・缶・ペットボトル': { days: ['月曜日'], time: '8:30' },
+            '新聞・段ボール': { days: ['第2・第4水曜日'], time: '8:30' }
         }
     }
 };
@@ -415,27 +495,148 @@ function extractGarbageItemFromPhrase(phrase) {
 function extractLocationFromPhrase(phrase) {
     console.log(`Extracting location from phrase: ${phrase}`);
     
-    // Map spoken location to region codes
+    // Map spoken location to region codes (comprehensive mapping)
     const locationMap = {
-        '久喜': 'kuki-a',
+        // 久喜地区 - Support both generic and specific block references
+        '久喜': 'kuki-a',         // Default to A if just "久喜" is mentioned
         '久喜地区': 'kuki-a',
-        '菖蒲': 'shobu-a',
+        '久喜A': 'kuki-a',
+        '久喜Aブロック': 'kuki-a',
+        '久喜a': 'kuki-a',
+        '久喜エー': 'kuki-a',
+        '久喜地区A': 'kuki-a',
+        '久喜地区Aブロック': 'kuki-a',
+        '久喜B': 'kuki-b',
+        '久喜Bブロック': 'kuki-b',
+        '久喜b': 'kuki-b',
+        '久喜ビー': 'kuki-b',
+        '久喜地区B': 'kuki-b',
+        '久喜地区Bブロック': 'kuki-b',
+        '久喜C': 'kuki-c',
+        '久喜Cブロック': 'kuki-c',
+        '久喜c': 'kuki-c',
+        '久喜シー': 'kuki-c',
+        '久喜地区C': 'kuki-c',
+        '久喜地区Cブロック': 'kuki-c',
+        '久喜D': 'kuki-d',
+        '久喜Dブロック': 'kuki-d',
+        '久喜d': 'kuki-d',
+        '久喜ディー': 'kuki-d',
+        '久喜地区D': 'kuki-d',
+        '久喜地区Dブロック': 'kuki-d',
+        
+        // 菖蒲地区
+        '菖蒲': 'shobu-a',        // Default to A if just "菖蒲" is mentioned
         '菖蒲地区': 'shobu-a',
-        '鷲宮': 'washinomiya-a',
+        'しょうぶ': 'shobu-a',
+        '菖蒲A': 'shobu-a',
+        '菖蒲Aブロック': 'shobu-a',
+        '菖蒲a': 'shobu-a',
+        '菖蒲エー': 'shobu-a',
+        'しょうぶA': 'shobu-a',
+        'しょうぶエー': 'shobu-a',
+        '菖蒲地区A': 'shobu-a',
+        '菖蒲地区Aブロック': 'shobu-a',
+        '菖蒲B': 'shobu-b',
+        '菖蒲Bブロック': 'shobu-b',
+        '菖蒲b': 'shobu-b',
+        '菖蒲ビー': 'shobu-b',
+        'しょうぶB': 'shobu-b',
+        'しょうぶビー': 'shobu-b',
+        '菖蒲地区B': 'shobu-b',
+        '菖蒲地区Bブロック': 'shobu-b',
+        
+        // 鷲宮地区
+        '鷲宮': 'washinomiya-a',  // Default to A if just "鷲宮" is mentioned
         '鷲宮地区': 'washinomiya-a',
-        '栗橋': 'kurihashi-a',
-        '栗橋地区': 'kurihashi-a',
+        'わしのみや': 'washinomiya-a',
+        '鷲宮A': 'washinomiya-a',
+        '鷲宮Aブロック': 'washinomiya-a',
+        '鷲宮a': 'washinomiya-a',
+        '鷲宮エー': 'washinomiya-a',
+        'わしのみやA': 'washinomiya-a',
+        'わしのみやエー': 'washinomiya-a',
+        '鷲宮地区A': 'washinomiya-a',
+        '鷲宮地区Aブロック': 'washinomiya-a',
+        '鷲宮B': 'washinomiya-b',
+        '鷲宮Bブロック': 'washinomiya-b',
+        '鷲宮b': 'washinomiya-b',
+        '鷲宮ビー': 'washinomiya-b',
+        'わしのみやB': 'washinomiya-b',
+        'わしのみやビー': 'washinomiya-b',
+        '鷲宮地区B': 'washinomiya-b',
+        '鷲宮地区Bブロック': 'washinomiya-b',
+        '鷲宮C': 'washinomiya-c',
+        '鷲宮Cブロック': 'washinomiya-c',
+        '鷲宮c': 'washinomiya-c',
+        '鷲宮シー': 'washinomiya-c',
+        'わしのみやC': 'washinomiya-c',
+        'わしのみやシー': 'washinomiya-c',
+        '鷲宮地区C': 'washinomiya-c',
+        '鷲宮地区Cブロック': 'washinomiya-c',
+        '鷲宮D': 'washinomiya-d',
+        '鷲宮Dブロック': 'washinomiya-d',
+        '鷲宮d': 'washinomiya-d',
+        '鷲宮ディー': 'washinomiya-d',
+        'わしのみやD': 'washinomiya-d',
+        'わしのみやディー': 'washinomiya-d',
+        '鷲宮地区D': 'washinomiya-d',
+        '鷲宮地区Dブロック': 'washinomiya-d',
+        
+        // 栗橋地区
+        '栗橋': 'kurihashi-e',    // Default to E if just "栗橋" is mentioned
+        '栗橋地区': 'kurihashi-e',
+        'くりはし': 'kurihashi-e',
+        '栗橋E': 'kurihashi-e',
+        '栗橋Eブロック': 'kurihashi-e',
+        '栗橋e': 'kurihashi-e',
+        '栗橋イー': 'kurihashi-e',
+        'くりはしE': 'kurihashi-e',
+        'くりはしイー': 'kurihashi-e',
+        '栗橋地区E': 'kurihashi-e',
+        '栗橋地区Eブロック': 'kurihashi-e',
+        '栗橋F': 'kurihashi-f',
+        '栗橋Fブロック': 'kurihashi-f',
+        '栗橋f': 'kurihashi-f',
+        '栗橋エフ': 'kurihashi-f',
+        'くりはしF': 'kurihashi-f',
+        'くりはしエフ': 'kurihashi-f',
+        '栗橋地区F': 'kurihashi-f',
+        '栗橋地区Fブロック': 'kurihashi-f',
+        '栗橋G': 'kurihashi-g',
+        '栗橋Gブロック': 'kurihashi-g',
+        '栗橋g': 'kurihashi-g',
+        '栗橋ジー': 'kurihashi-g',
+        'くりはしG': 'kurihashi-g',
+        'くりはしジー': 'kurihashi-g',
+        '栗橋地区G': 'kurihashi-g',
+        '栗橋地区Gブロック': 'kurihashi-g',
+        '栗橋H': 'kurihashi-h',
+        '栗橋Hブロック': 'kurihashi-h',
+        '栗橋h': 'kurihashi-h',
+        '栗橋エイチ': 'kurihashi-h',
+        'くりはしH': 'kurihashi-h',
+        'くりはしエイチ': 'kurihashi-h',
+        '栗橋地区H': 'kurihashi-h',
+        '栗橋地区Hブロック': 'kurihashi-h',
+        
+        // 具体的な地域名
         '青毛': 'kuki-a',
         '本町': 'kuki-c',
         '久喜中央': 'kuki-b',
         '青葉': 'kuki-c',
-        '桜田': 'washinomiya-a'
+        '青葉2丁目': 'kuki-d',
+        '桜田': 'washinomiya-a',
+        '菖蒲町菖蒲': 'shobu-a',
+        '菖蒲町新堀': 'shobu-b'
     };
     
-    for (const [spoken, code] of Object.entries(locationMap)) {
+    // Check for exact matches first (longer phrases first to avoid partial matches)
+    const sortedKeys = Object.keys(locationMap).sort((a, b) => b.length - a.length);
+    for (const spoken of sortedKeys) {
         if (phrase.includes(spoken)) {
-            console.log(`Found location: ${spoken} -> ${code}`);
-            return code;
+            console.log(`Found location: ${spoken} -> ${locationMap[spoken]}`);
+            return locationMap[spoken];
         }
     }
     
