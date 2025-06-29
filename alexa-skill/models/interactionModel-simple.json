@@ -1,0 +1,139 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "久喜市ゴミ分別",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "GarbageSearchIntent",
+          "slots": [
+            {
+              "name": "GarbageItem",
+              "type": "GARBAGE_ITEMS"
+            },
+            {
+              "name": "Location",
+              "type": "KUKI_LOCATIONS"
+            }
+          ],
+          "samples": [
+            "{GarbageItem}",
+            "{GarbageItem} について",
+            "{GarbageItem} を教えて",
+            "{GarbageItem} の分別",
+            "{GarbageItem} の捨て方"
+          ]
+        },
+        {
+          "name": "SetLocationIntent",
+          "slots": [
+            {
+              "name": "Location",
+              "type": "KUKI_LOCATIONS"
+            }
+          ],
+          "samples": [
+            "{Location} に住んでいます",
+            "{Location} です",
+            "{Location} に設定して",
+            "{Location} ブロックです"
+          ]
+        },
+        {
+          "name": "LaunchByNameIntent",
+          "samples": [
+            "ゴミ分別アプリ",
+            "ゴミ分別",
+            "久喜のゴミ分別アプリ",
+            "久喜のゴミ分別",
+            "久喜ゴミ分別",
+            "ごみ分別アプリ",
+            "ごみ分別",
+            "分別アプリ"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "GARBAGE_ITEMS",
+          "values": [
+            {
+              "name": {
+                "value": "ペットボトル",
+                "synonyms": ["ペット", "ペットボトル", "ボトル"]
+              }
+            },
+            {
+              "name": {
+                "value": "缶",
+                "synonyms": ["缶", "空き缶", "アルミ缶", "かん"]
+              }
+            },
+            {
+              "name": {
+                "value": "びん",
+                "synonyms": ["びん", "瓶", "ビン", "ガラス瓶"]
+              }
+            },
+            {
+              "name": {
+                "value": "プラスチック",
+                "synonyms": ["プラスチック", "プラ", "プラスチック容器"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "KUKI_LOCATIONS",
+          "values": [
+            {
+              "name": {
+                "value": "久喜A",
+                "synonyms": ["久喜A", "久喜エー", "久喜Aブロック", "a地区", "A地区"]
+              }
+            },
+            {
+              "name": {
+                "value": "久喜B",
+                "synonyms": ["久喜B", "久喜ビー", "久喜Bブロック", "b地区", "B地区"]
+              }
+            },
+            {
+              "name": {
+                "value": "久喜C",
+                "synonyms": ["久喜C", "久喜シー", "久喜Cブロック", "c地区", "C地区"]
+              }
+            },
+            {
+              "name": {
+                "value": "久喜D",
+                "synonyms": ["久喜D", "久喜ディー", "久喜Dブロック", "d地区", "D地区", "ディー地区"]
+              }
+            },
+            {
+              "name": {
+                "value": "久喜",
+                "synonyms": ["久喜", "久喜地区", "久喜市"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

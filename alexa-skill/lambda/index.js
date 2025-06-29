@@ -728,6 +728,25 @@ const SetLocationIntentHandler = {
     }
 };
 
+// LaunchByNameIntent Handler (for alternative invocation names)
+const LaunchByNameIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'LaunchByNameIntent';
+    },
+    handle(handlerInput) {
+        console.log('LaunchByNameIntentHandler: handle called.');
+        
+        const speechText = '久喜市ゴミ分別アプリへようこそ。お住まいの地区を設定すると、正確な収集日をお知らせできます。まず、どの地区にお住まいですか？久喜地区、菖蒲地区、鷲宮地区、栗橋地区のいずれかを教えてください。';
+        const repromptText = 'どの地区にお住まいですか？久喜、菖蒲、鷲宮、栗橋のいずれかを教えてください。';
+        
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(repromptText)
+            .getResponse();
+    }
+};
+
 // Help Intent Handler
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -799,6 +818,7 @@ console.log('index.js: Handlers defined. Setting up SkillBuilder.');
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
+        LaunchByNameIntentHandler,
         SetLocationIntentHandler,
         GarbageSearchIntentHandler,
         HelpIntentHandler,
