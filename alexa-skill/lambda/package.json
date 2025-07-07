@@ -1,24 +1,12 @@
 {
   "name": "kuki-trash-alexa-skill",
   "version": "1.0.0",
-  "description": "久喜市ゴミ分別Alexaスキル - 久喜市のゴミ分別方法を音声で案内",
+  "description": "久喜市ゴミ分別Alexaスキル",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"No tests specified\"",
-    "start": "node index.js"
-  },
   "dependencies": {
     "ask-sdk-core": "^2.13.0",
     "ask-sdk-model": "^1.29.0"
   },
-  "keywords": [
-    "alexa",
-    "skill",
-    "garbage",
-    "sorting",
-    "kuki",
-    "japan"
-  ],
   "author": "Kuki City Garbage Sorting Assistant",
   "license": "MIT"
 }
