@@ -26,13 +26,13 @@ kuki-trash-app/
 │   └── shared/                    # 共有データファイル
 │       ├── garbageData.js         # ゴミ分別データ
 │       └── regionData.js          # 地域収集スケジュール
-├── alexa-skill/                   # Alexaスキル
-│   ├── lambda/                    # Lambda関数コード
+├── alexa-skill/                   # Alexaスキル（Alexa-Hosted）
+│   ├── lambda/                    # スキルコード
 │   ├── models/                    # 対話モデル
-│   └── docs/                      # Alexaスキル用ドキュメント
+│   ├── README.md                  # Alexaスキル説明
+│   └── DEPLOYMENT.md              # デプロイガイド
 ├── tests/                         # テストファイル
-│   ├── web/                       # Webアプリテスト
-│   └── alexa/                     # Alexaスキルテスト
+│   └── web/                       # Webアプリテスト
 ├── tools/                         # 開発ツール
 ├── docker/                        # Docker設定
 └── docs/                          # プロジェクトドキュメント
@@ -204,13 +204,8 @@ npm test
 # またはDockerコンテナでのテスト
 docker run --rm -v $(pwd):/app -w /app node:18-alpine npm test
 
-# Alexaスキルのテスト
-cd alexa-skill/lambda
-npm test
-
-# ローカルAlexaテスト
-cd tests/alexa
-node test-local.js
+# Alexaスキルのテスト（Alexa Developer Consoleで実行）
+# Alexa-Hosted Skills では Console の Test タブでテストします
 ```
 
 ### 🔍 デバッグとトラブルシューティング
@@ -378,58 +373,36 @@ cd ../../tests/alexa
 node test-local.js
 ```
 
-### 利用可能な対話モデル
+### 対話モデル
 
-`alexa-skill/models/` に以下の対話モデルが含まれています：
-
-- **`interactionModel.json`** - 基本モデル
-- **`interactionModel-with-location.json`** - 地域機能付きモデル（推奨）  
-- **`interactionModel-complex.json`** - 複合モデル
-- **`interactionModel-fixed.json`** - 修正版モデル
-- **`interactionModel-improved.json`** - 改良版モデル
+`alexa-skill/models/interactionModel.json` に音声認識用の対話モデルが含まれています。このモデルには地域設定機能と包括的なゴミ分別クエリが含まれています。
 
 ### デプロイ方法
 
-#### 🆓 Alexa-hosted Skills（推奨・完全無料）
+#### 🆓 Alexa-hosted Skills（完全無料）
 
-Amazon Alexaが提供する **完全無料のホスティングサービス** です。追加料金なしでAlexaスキルを公開できます。
+Amazon Alexaが提供する **完全無料のホスティングサービス** を使用します。追加料金なしでAlexaスキルを公開できます。
 
 **手順:**
 1. [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask) でスキル作成
-   - スキル名: 久喜市ゴミ分別アプリ
-   - 言語: Japanese  
-   - Experience: Other
-   - Model: Custom
-   - Hosting: **🆓 Alexa-hosted (Node.js)** ← 完全無料オプション
+   - スキル名: 久喜市ゴミ分別
+   - 言語: Japanese (JP)
+   - モデル: Custom
+   - ホスティング: **🆓 Alexa-hosted (Node.js)** ← 完全無料
 
-2. `alexa-skill/lambda/` のファイルをDeveloper Console内のCode エディタにコピー
+2. **Code タブ**: `alexa-skill/lambda/index.js` と `package.json` をコピー
 
-3. `alexa-skill/models/interactionModel-with-location.json` を Build タブでインポート
+3. **Build タブ**: `alexa-skill/models/interactionModel.json` をインポート
 
-4. テスト・公開（久喜市の人口規模なら完全に無料枠内で運用可能）
+4. **Test タブ**: テストして公開
 
-**無料枠の詳細:**
-- 🎯 AWS Lambda: 月間100万リクエスト無料
-- 💾 DynamoDB: 25GBまで無料  
-- 📁 S3ストレージ: 5GBまで無料
-- 🌐 データ転送: 15GB/月まで無料
-- ✅ 久喜市の人口約15万人→仮に1日1000リクエストでも月間3万リクエスト程度
+**完全無料で利用可能:**
+- ✅ Alexaのホスティングサービスを使用（無料）
+- ✅ 追加のAWSアカウント不要
+- ✅ セットアップ時間: 約10分
+- ✅ 久喜市の利用規模なら十分な無料枠
 
-詳細な手順は `alexa-skill/docs/ALEXA-HOSTED-DEPLOYMENT.md` をご覧ください。
-
-#### 手動デプロイ（上級者向け・有料）
-```bash
-# 1. lambda フォルダをZIPファイルにする
-cd alexa-skill/lambda
-zip -r ../kuki-alexa-skill.zip .
-
-# 2. AWS Lambda Consoleでアップロード
-# - 新しいLambda関数を作成
-# - Runtime: Node.js 18.x
-# - ZIPファイルをアップロード
-```
-
-**注意**: AlexaスキルはAWS Lambda用に設計されており、ローカルDockerコンテナでの実行は不要です。
+詳細な手順は [`alexa-skill/DEPLOYMENT.md`](alexa-skill/DEPLOYMENT.md) をご覧ください。
 
 ## 🔐 セキュリティ
 
@@ -470,7 +443,7 @@ MIT License
 ### 開発のヒント
 
 - **Webアプリ**: `src/web/` でフロントエンド開発
-- **Alexaスキル**: `alexa-skill/lambda/` でバックエンド開発
+- **Alexaスキル**: `alexa-skill/lambda/` でスキル開発（Alexa-Hosted対応）
 - **共有データ**: `src/shared/` でデータ更新
 - **テスト**: `tests/` でテストコード作成
 - **ツール**: `tools/` で開発用ユーティリティ
